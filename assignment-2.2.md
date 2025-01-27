@@ -106,8 +106,47 @@ $ gunzip -c test.fastq.gz| grep "^TGCAG" | grep "GAG$" | wc -l
 "AAAACCCC" and for each print that line, the line above it, and two lines below it (so that a 4-line 
 chunk around each search hit is printed). Describe your work.
 
+Lets start by just simply finding the lines that have the given sequence:
 ```bash
+$ gunzip -c test.fastq.gz | grep AAAACCCC
+TGCAGAATAGATAGGAAACGTTTTGGCGCTGTAGACATTAAAACCCCAGTAGGACACGGGTATCACAACGTACA
+TGCAGTGGATCGAAAACCCCGAGGCTCAAGGTCACGCCACCGTCTTCGTGGCCAAGTTCTTCGGCCGCGCCGGC
+
+# Looks like there are only 2 of these
+```
+
+Now, I know that grep can print lines before and after a target line, but I never remember how to do this so i had to search through the manual (`man grep`). In the man page I searched for 'before' and found this helpful info about "context":
 
 ```
+     -B num, --before-context=num
+             Print num lines of leading context before each match.  See also
+             the -A and -C options.
+```
+
+```
+# Lets try it with just -B first
+$ gunzip -c test.fastq.gz| grep AAAACCCC -B 1     
+@32082_przewalskii.98 GRC13_0027_FC:4:1:5669:1669 length=74
+TGCAGAATAGATAGGAAACGTTTTGGCGCTGTAGACATTAAAACCCCAGTAGGACACGGGTATCACAACGTACA
+--
+@33413_thamno.59 GRC13_0027_FC:4:1:5000:1620 length=74
+TGCAGTGGATCGAAAACCCCGAGGCTCAAGGTCACGCCACCGTCTTCGTGGCCAAGTTCTTCGGCCGCGCCGGC
+```
+
+Adding 2 lines of "after" context to complete the assignment:
+
+```
+$ gunzip -c test.fastq.gz| grep AAAACCCC -B 1 -A 2
+@32082_przewalskii.98 GRC13_0027_FC:4:1:5669:1669 length=74
+TGCAGAATAGATAGGAAACGTTTTGGCGCTGTAGACATTAAAACCCCAGTAGGACACGGGTATCACAACGTACA
++32082_przewalskii.98 GRC13_0027_FC:4:1:5669:1669 length=74
+IIIIIIIIIIIIIIIIIIHIHIIIIIIIIGIIIGIIIIIIHIIIIIIIHIIIIHIIIIIIEHIHHIIIIICIHI
+--
+@33413_thamno.59 GRC13_0027_FC:4:1:5000:1620 length=74
+TGCAGTGGATCGAAAACCCCGAGGCTCAAGGTCACGCCACCGTCTTCGTGGCCAAGTTCTTCGGCCGCGCCGGC
++33413_thamno.59 GRC13_0027_FC:4:1:5000:1620 length=74
+IIIIIIIIIIIIIIIIIIIIDHIIHHIIIIIEIBGBGGGIIHEHHHIEBBHHIEGGDGIGGHAEFDBFBDDB?D
+```
+
 
 
